@@ -1,31 +1,19 @@
-from app import tasks
-from fastapi import FastAPI, HTTPException
-from app import schemas, crud, database
-import asyncio
+
+from fastapi import FastAPI
+from app import database
+from app.logger import logger
+from app.routes import orders
+from contextlib import asynccontextmanager
 
 app = FastAPI()
 
 
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await database.init_db()
+    yield
+    
+app = FastAPI(lifespan=lifespan)
 
 
-@app.post("/orders", response_model=schemas.OrderResponse)
-async def create_order(order: schemas.OrderCreate):
-    db_order = await crud.create_order(order)
-    tasks.process_order.delay(db_order.id)  # Enviar tarea a Celery
-    return db_order
-
-
-@app.get("/orders/{order_id}", response_model=schemas.OrderResponse)
-async def get_order(order_id: int):
-    order = await crud.get_order(order_id)
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    return order
-
-
-@app.get("/")
-def read_root():
-    return {"message": "API funcionando correctamente"}
+app.include_router(orders.router)
