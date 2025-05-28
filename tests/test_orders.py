@@ -32,7 +32,7 @@ async def setup_test_db():
 async def test_create_and_get_order():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        # Crear orden
+        # Create order
         response = await client.post("/orders", json={"product_name": "Teclado", "quantity": 5})
         assert response.status_code == 200
         data = response.json()
@@ -40,7 +40,7 @@ async def test_create_and_get_order():
         assert data["status"] == "pending"
         order_id = data["id"]
 
-        # Obtener orden
+        # Get orden
         response = await client.get(f"/orders/{order_id}")
         assert response.status_code == 200
         data = response.json()
@@ -52,12 +52,12 @@ async def test_create_and_get_order():
 async def test_update_order():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        # Crear orden inicial
+        # Create order to update
         response = await client.post("/orders", json={"product_name": "Mouse", "quantity": 2})
         assert response.status_code == 200
         order_id = response.json()["id"]
 
-        # Actualizar orden
+        # Update orden
         update_data = {"product_name": "Mouse Gamer", "quantity": 10}
         response = await client.put(f"/orders/{order_id}", json=update_data)
         assert response.status_code == 200
@@ -70,20 +70,38 @@ async def test_update_order():
 async def test_delete_order():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        # Crear orden a eliminar
+        # Create order to delete
         response = await client.post("/orders", json={"product_name": "Monitor", "quantity": 1})
         assert response.status_code == 200
         order_id = response.json()["id"]
 
-        # Eliminar orden
+        # Delete order
         response = await client.delete(f"/orders/{order_id}")
         assert response.status_code == 200
         assert response.json()["message"] == "Order deleted successfully"
 
-        # Verificar que ya no existe
+        # Check that the order no longer exists
         response = await client.get(f"/orders/{order_id}")
         assert response.status_code == 404
+        
 
+@pytest.mark.asyncio
+async def test_get_all_orders():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Create multiple orders
+        await client.post("/orders", json={"product_name": "Laptop", "quantity": 2})
+        await client.post("/orders", json={"product_name": "Tablet", "quantity": 1})
+
+        # Get all orders
+        response = await client.get("/orders")
+        assert response.status_code == 200
+        data = response.json()
+
+        assert isinstance(data, list)
+        assert len(data) >= 2
+        assert any(order["product_name"] == "Laptop" for order in data)
+        assert any(order["product_name"] == "Tablet" for order in data)
 
 # Clean up the temporary database file after all tests
 @pytest.fixture(scope="session", autouse=True)
