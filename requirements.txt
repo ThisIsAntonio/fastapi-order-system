@@ -1,8 +1,11 @@
 fastapi
 uvicorn[standard]
+pydantic
 SQLAlchemy
 asyncpg
-pydantic
 celery
 redis
 aiofiles
+celery
+redis
+sql

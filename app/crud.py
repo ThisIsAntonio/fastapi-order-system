@@ -18,3 +18,12 @@ async def get_order(order_id: int):
     async with SessionLocal() as session:
         result = await session.execute(select(Order).where(Order.id == order_id))
         return result.scalar_one_or_none()
+
+
+async def update_order_status(order_id: int, new_status: str):
+    async with SessionLocal() as session:
+        result = await session.execute(select(Order).where(Order.id == order_id))
+        order = result.scalar_one_or_none()
+        if order:
+            order.status = new_status
+            await session.commit()

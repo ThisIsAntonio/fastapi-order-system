@@ -1,3 +1,4 @@
+from app import tasks
 from fastapi import FastAPI, HTTPException
 from app import schemas, crud, database
 import asyncio
@@ -13,6 +14,7 @@ async def startup():
 @app.post("/orders", response_model=schemas.OrderResponse)
 async def create_order(order: schemas.OrderCreate):
     db_order = await crud.create_order(order)
+    tasks.process_order.delay(db_order.id)  # Enviar tarea a Celery
     return db_order
 
 
