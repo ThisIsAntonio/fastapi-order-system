@@ -1,7 +1,31 @@
 import pytest
+import os, tempfile
+os.environ["TESTING"] = "1"
+db_fd, db_path = tempfile.mkstemp()
+TEST_DATABASE_URL = f"sqlite+aiosqlite:///{db_path}"
+
 from httpx import AsyncClient
 from httpx import ASGITransport
+from app.database import get_test_sessionmaker
+from app import database
+
+SessionLocal, engine = get_test_sessionmaker(TEST_DATABASE_URL)
+database.SessionLocal = SessionLocal
 from app.main import app
+
+from unittest.mock import patch
+
+
+@pytest.fixture(autouse=True)
+async def setup_test_db():
+    SessionLocal, engine = get_test_sessionmaker(TEST_DATABASE_URL)
+    database.SessionLocal = SessionLocal  # override global session in app
+
+    async with engine.begin() as conn:
+        await conn.run_sync(database.Base.metadata.drop_all)
+        await conn.run_sync(database.Base.metadata.create_all)
+    yield
+    await engine.dispose()
 
 
 @pytest.mark.asyncio
@@ -22,3 +46,48 @@ async def test_create_and_get_order():
         data = response.json()
         assert data["id"] == order_id
         assert data["quantity"] == 5
+
+
+@pytest.mark.asyncio
+async def test_update_order():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Crear orden inicial
+        response = await client.post("/orders", json={"product_name": "Mouse", "quantity": 2})
+        assert response.status_code == 200
+        order_id = response.json()["id"]
+
+        # Actualizar orden
+        update_data = {"product_name": "Mouse Gamer", "quantity": 10}
+        response = await client.put(f"/orders/{order_id}", json=update_data)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["product_name"] == "Mouse Gamer"
+        assert data["quantity"] == 10
+
+
+@pytest.mark.asyncio
+async def test_delete_order():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Crear orden a eliminar
+        response = await client.post("/orders", json={"product_name": "Monitor", "quantity": 1})
+        assert response.status_code == 200
+        order_id = response.json()["id"]
+
+        # Eliminar orden
+        response = await client.delete(f"/orders/{order_id}")
+        assert response.status_code == 200
+        assert response.json()["message"] == "Order deleted successfully"
+
+        # Verificar que ya no existe
+        response = await client.get(f"/orders/{order_id}")
+        assert response.status_code == 404
+
+
+# Clean up the temporary database file after all tests
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_temp_db():
+    yield
+    os.close(db_fd)
+    os.unlink(db_path)

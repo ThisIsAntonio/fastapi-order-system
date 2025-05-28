@@ -38,6 +38,31 @@ async def get_order(order_id: int):
     return order
 
 
+@router.put("/orders/{order_id}", response_model=schemas.OrderResponse)
+async def update_order(order_id: int, order_update: schemas.OrderCreate):
+    try:
+        updated_order = await database.update_order(order_id, order_update)
+        if not updated_order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        logger.info(f"Order updated: {updated_order.id}")
+        return updated_order
+    except Exception as e:
+        logger.error(f"Failed to update order: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.delete("/orders/{order_id}")
+async def delete_order(order_id: int):
+    try:
+        success = await database.delete_order(order_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Order not found")
+        logger.info(f"Order deleted: {order_id}")
+        return {"message": "Order deleted successfully"}
+    except Exception as e:
+        logger.error(f"Failed to delete order: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 @router.get("/")
 def read_root():
     return {"message": "API funcionando correctamente"}
