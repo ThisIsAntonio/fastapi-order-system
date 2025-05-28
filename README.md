@@ -69,6 +69,16 @@ pip install -r requirements.txt
 
 ---
 
+## 🌐 Live Demo
+
+You can explore the live API using the link below:
+
+🔗 **[https://fastapi-order-system.onrender.com/docs](https://fastapi-order-system.onrender.com/docs)** – Swagger UI
+
+> 🟢 This app is deployed on [Render](https://render.com/) and monitored using [UptimeRobot](https://uptimerobot.com/) to ensure continuous availability.
+
+---
+
 ## Environment Configuration
 
 This project uses a `.env` file to store environment variables such as the database URL.
