@@ -9,3 +9,6 @@ aiofiles
 celery
 redis
 sql
+pytest
+pytest-asyncio
+httpx
