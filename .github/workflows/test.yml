@@ -43,6 +43,7 @@ jobs:
       run: |
           echo "TESTING=True" >> $GITHUB_ENV
           echo "DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/test_db" >> $GITHUB_ENV
+          echo "BROKER_URL=redis://localhost:6379/0" >> $GITHUB_ENV
   
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=." >> $GITHUB_ENV
