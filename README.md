@@ -3,8 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.95+-green.svg)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Test Workflow](https://github.com/ThisIsAntonio/fastapi-order-system/actions/workflows/test.yml/badge.svg)]
-
+![Test Workflow](https://github.com/ThisIsAntonio/fastapi-order-system/actions/workflows/test.yml/badge.svg)
 
 A lightweight backend application built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL** for managing product orders with full support for async I/O, Docker, and background processing via Celery and Redis.
 
@@ -18,6 +17,7 @@ A lightweight backend application built with **FastAPI**, **SQLAlchemy**, and **
 - ❌ Delete orders
 - 🔁 Asynchronous processing using Celery + Redis
 - 🧪 Full test coverage with `pytest` and `httpx`
+- 📊 Code coverage tracking with `pytest-cov` and GitHub Actions
 - 🐳 Docker and Docker Compose support
 
 ---
@@ -31,6 +31,7 @@ A lightweight backend application built with **FastAPI**, **SQLAlchemy**, and **
 - Redis & Celery (Background Tasks)
 - Pytest & HTTPX
 - Docker & Docker Compose
+- GitHub Actions
 
 ---
 
@@ -74,17 +75,33 @@ This project uses a `.env` file to store environment variables such as the datab
 
 Create a `.env` file in the root directory with the following structure:
 
-```env
+```ini
 DATABASE_URL=postgresql+asyncpg://<username>:<password>@<host>:<port>/<database>
-```
-
-Example:
-
-```env
-DATABASE_URL=postgresql+asyncpg://postgres:mysecret@localhost:5432/orders_db
+BROKER_URL=redis://localhost:6379/0
+TESTING=False
 ```
 
 Make sure this file is **not committed** to version control.
+
+### 📄 Example Environment File
+
+To get started quickly, you can copy the provided example:
+
+```bash
+cp .env.example .env
+```
+
+This will create a new `.env` file with placeholder values that you can customize.
+
+Example contents of `.env.example`:
+
+```ini
+DATABASE_URL=postgresql+asyncpg://postgres:yourpassword@localhost:5432/your_db
+BROKER_URL=redis://localhost:6379/0
+TESTING=False
+```
+
+> 💡 Remember: **Never commit your actual `.env` file** to version control. Use `.env.example` to share expected keys only.
 
 ---
 
@@ -103,17 +120,11 @@ Visit the API docs:
 
 ## 🧪 Running Tests
 
-### 🐧 Linux / macOS
-
-```bash
-PYTHONPATH=./ ./run_tests.sh
-```
-
 ### 🪟 Windows
 
 ```cmd
 set PYTHONPATH=.
-pytest tests/
+pytest --cov=app --cov-report=term --cov-report=xml
 ```
 
 ---
@@ -169,7 +180,6 @@ fastapi-order-system/
 [![🌍 Portfolio](https://img.shields.io/badge/Website-marcosastudillo.com-blueviolet?style=for-the-badge&logo=google-chrome)](https://www.marcosastudillo.com)
 [![💼 LinkedIn](https://img.shields.io/badge/LinkedIn-Marcos%20Astudillo-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/marcos-antonio-astudillo-carrasco)
 [![🐱 GitHub](https://img.shields.io/badge/GitHub-ThisIsAntonio-181717?style=for-the-badge&logo=github)](https://github.com/ThisIsAntonio)
-
 
 ---
 

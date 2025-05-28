@@ -19,7 +19,7 @@ def init_session(engine):
     )
 
 
-if os.getenv("TESTING") != "1":
+if os.getenv("TESTING") != "True":
     # Evita errores si TESTING está seteado antes de este import
     from app.database import DATABASE_URL
     engine = create_async_engine(DATABASE_URL, echo=True)

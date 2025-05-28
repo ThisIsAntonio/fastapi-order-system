@@ -1,6 +1,6 @@
 import pytest
 import os, tempfile
-os.environ["TESTING"] = "1"
+os.environ["TESTING"] = "True"
 db_fd, db_path = tempfile.mkstemp()
 TEST_DATABASE_URL = f"sqlite+aiosqlite:///{db_path}"
 
