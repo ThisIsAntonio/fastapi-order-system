@@ -107,5 +107,8 @@ async def test_get_all_orders():
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_temp_db():
     yield
-    os.close(db_fd)
-    os.unlink(db_path)
+    try:
+        os.close(db_fd)
+        os.unlink(db_path)
+    except PermissionError:
+        print("⚠️ Could not delete temp DB file, it may still be in use.")

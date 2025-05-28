@@ -12,3 +12,4 @@ sql
 pytest
 pytest-asyncio
 httpx
+aiosqlite

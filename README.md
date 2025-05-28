@@ -24,12 +24,15 @@ This is a simple backend application built with **FastAPI** and **SQLAlchemy** t
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/ThisIsAntonio/fastapi-order-system
 cd order_system
 
 # Create virtual environment
 python -m venv venv
+# Activate the virtual environment in Linux/Mac
 source venv/bin/activate
+# Activate the virtual environment in Windows
+venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
