@@ -5,9 +5,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from app.db_base import Base
 from app import models, schemas
+from app.config import settings
 import os
 
-DATABASE_URL = "postgresql+asyncpg://postgres:KHWmnSnQZMuqihZMfuxKiZwmdMhgxaFu@metro.proxy.rlwy.net:12098/railway"
+DATABASE_URL = settings.DATABASE_URL
 
 SessionLocal = None  # Será inicializado más adelante
 

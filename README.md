@@ -1,129 +1,176 @@
-# Order Management API
+# 📦 Order Management API
 
-This is a simple backend application built with **FastAPI** and **SQLAlchemy** to manage product orders. It provides RESTful endpoints to create, read, update, and delete orders.
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.95+-green.svg)](https://fastapi.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Features
+A lightweight backend application built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL** for managing product orders with full support for async I/O, Docker, and background processing via Celery and Redis.
 
-- Create new product orders
-- Retrieve one or all orders
-- Update existing orders
-- Delete orders
-- SQLite for development and PostgreSQL ready
-- Fully tested with `pytest` and `httpx`
+---
 
-## Tech Stack
+## ✨ Features
+
+- 📥 Create new product orders
+- 📋 Retrieve individual or all orders
+- ✏️ Update existing orders
+- ❌ Delete orders
+- 🔁 Asynchronous processing using Celery + Redis
+- 🧪 Full test coverage with `pytest` and `httpx`
+- 🐳 Docker and Docker Compose support
+
+---
+
+## 🛠️ Tech Stack
 
 - Python 3.11
 - FastAPI
-- SQLAlchemy (async)
-- PostgreSQL / SQLite
-- Pytest
-- httpx
+- SQLAlchemy (Async)
+- PostgreSQL (Production) / SQLite (Testing)
+- Redis & Celery (Background Tasks)
+- Pytest & HTTPX
+- Docker & Docker Compose
 
-## Installation
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/ThisIsAntonio/fastapi-order-system
-cd order_system
+cd fastapi-order-system
+```
 
-# Create virtual environment
-python -m venv venv
-# Activate the virtual environment in Linux/Mac
+### 2. Create a Virtual Environment
+
+#### 🔷 Linux / macOS
+
+```bash
+python3 -m venv venv
 source venv/bin/activate
-# Activate the virtual environment in Windows
-venv\Scripts\activate
+```
 
-# Install dependencies
+#### 🔶 Windows
+
+```cmd
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Running the Application
+---
+
+## Environment Configuration
+
+This project uses a `.env` file to store environment variables such as the database URL.
+
+Create a `.env` file in the root directory with the following structure:
+
+```env
+DATABASE_URL=postgresql+asyncpg://<username>:<password>@<host>:<port>/<database>
+```
+
+Example:
+
+```env
+DATABASE_URL=postgresql+asyncpg://postgres:mysecret@localhost:5432/orders_db
+```
+
+Make sure this file is **not committed** to version control.
+
+---
+
+## 💡 Running the App Locally
 
 ```bash
-# Start the FastAPI server
 uvicorn app.main:app --reload
 ```
 
-The API will be available at: `http://127.0.0.1:8000`
+Visit the API docs:
 
-Swagger UI documentation: `http://127.0.0.1:8000/docs`
+- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
-## Running Tests
+---
+
+## 🧪 Running Tests
+
+### 🐧 Linux / macOS
 
 ```bash
-# Run all tests
 PYTHONPATH=./ ./run_tests.sh
 ```
 
-You should see output similar to:
+### 🪟 Windows
 
-```
-tests/test_orders.py .... [100%]
-4 passed in 0.45s
-```
-
-## Project Structure
-
-```
-order_system/
-├── app/
-│   ├── main.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── crud.py
-│   ├── db_base
-│   ├── logger
-│   ├── task
-│   ├── cekery_worker
-│   ├── routes/
-│   │   └── orders.py
-│   └── database.py
-├── tests/
-│   └── test_orders.py
-├── run_tests.sh
-└── requirements.txt
+```cmd
+set PYTHONPATH=.
+pytest tests/
 ```
 
-## License
+---
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🐳 Docker Setup
 
-## 🚀 Getting Started with Docker
-
-To run the application and the background worker using Docker and Docker Compose:
-
-### 1. Build and start services
+### 1. Start All Services
 
 ```bash
 docker-compose up --build
 ```
 
-This will start:
-- The **FastAPI** application (served via Uvicorn)
-- A **Redis** server (used as the broker for Celery)
-- A **Celery** worker for background task processing
+This launches:
+
+- `redis`: Task broker
+- `celery_worker`: Background job processor
+- `FastAPI` app via Uvicorn (modify Dockerfile as needed)
 
 ### 2. Access the API
 
-Once the services are up, the API will be accessible at:
+- [http://localhost:8000](http://localhost:8000)
+- [http://localhost:8000/docs](http://localhost:8000/docs)
+
+---
+
+## 📂 Project Structure
 
 ```
-http://localhost:8000
+fastapi-order-system/
+├── app/
+│   ├── main.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── routes/
+│   │   └── orders.py
+│   ├── database.py
+│   ├── celery_worker.py
+│   └── tasks/
+├── tests/
+│   └── test_orders.py
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── run_tests.sh
+└── README.md
 ```
 
-And the automatically generated documentation will be available at:
+---
 
-```
-http://localhost:8000/docs
-```
+## 👨‍💻 Author
 
-### 3. Run tests (optional)
+**Marcos Astudillo**  
+[![🌍 Portfolio](https://img.shields.io/badge/Website-marcosastudillo.com-blueviolet?style=for-the-badge&logo=google-chrome)](https://www.marcosastudillo.com)
+[![💼 LinkedIn](https://img.shields.io/badge/LinkedIn-Marcos%20Astudillo-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/marcos-antonio-astudillo-carrasco)
+[![🐱 GitHub](https://img.shields.io/badge/GitHub-ThisIsAntonio-181717?style=for-the-badge&logo=github)](https://github.com/ThisIsAntonio)
 
-To run the test suite locally (not via Docker):
 
-```bash
-PYTHONPATH=./ ./run_tests.sh
-```
+---
 
-Make sure to install development dependencies if you're running tests outside of Docker.
+## 📄 License
+
+This project is licensed under the [`MIT LICENSE`](LICENSE) © 2025 Marcos Astudillo
