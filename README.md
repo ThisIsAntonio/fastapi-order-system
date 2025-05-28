@@ -3,6 +3,8 @@
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.95+-green.svg)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Test Workflow](https://github.com/ThisIsAntonio/fastapi-order-system/actions/workflows/test.yml/badge.svg)]
+
 
 A lightweight backend application built with **FastAPI**, **SQLAlchemy**, and **PostgreSQL** for managing product orders with full support for async I/O, Docker, and background processing via Celery and Redis.
 
